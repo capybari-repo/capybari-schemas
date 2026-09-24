@@ -1,0 +1,17 @@
+{
+  "id": "secrets",
+  "name": "Secret Scanner",
+  "version": "0.1.0",
+  "category": "security",
+  "summary": "Finds credentials, tokens and keys committed to the repository.",
+  "stability": "stable",
+  "core_api": "v0",
+  "targets": ["repository"],
+  "requires": ["inventory"],
+  "findings": ["secret"],
+  "scores": ["security"],
+  "cost": "medium",
+  "execution": { "local": true, "network": "none", "ai": "none" },
+  "privacy": "Runs entirely locally. Nothing leaves the machine.",
+  "engines": [{ "name": "Gitleaks", "license": "MIT", "url": "https://github.com/gitleaks/gitleaks" }]
+}

@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.capybari.com/source-intelligence/0.1/report.schema.json",
+  "title": "Capybari Source Intelligence report",
+  "description": "The unified Software/Website X-Ray produced by the CLI, the GitHub Action and the hosted service. JSON is the canonical form; Markdown, HTML and SARIF are renderings of it.",
+  "type": "object",
+  "required": ["schema_version", "tool", "scan", "summary", "scores", "findings", "facts", "capabilities", "recommendations", "data_boundary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "commit": { "type": "string" } }
+    },
+    "scan": {
+      "type": "object",
+      "required": ["id", "target", "started_at", "finished_at", "duration_ms", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "target": {
+          "type": "object",
+          "required": ["kind", "input", "display"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "enum": ["repository", "website"] },
+            "input": { "type": "string" },
+            "url": { "type": "string" },
+            "display": { "type": "string" }
+          }
+        },
+        "started_at": { "type": "string", "format": "date-time" },
+        "finished_at": { "type": "string", "format": "date-time" },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "mode": {
+          "type": "object",
+          "required": ["offline", "active", "hosted"],
+          "additionalProperties": false,
+          "properties": { "offline": { "type": "boolean" }, "active": { "type": "boolean" }, "hosted": { "type": "boolean" } }
+        },
+        "question": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["headline", "counts"],
+      "additionalProperties": false,
+      "properties": {
+        "headline": { "type": "string" },
+        "counts": { "$ref": "#/$defs/counts" },
+        "top_findings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "value", "rating", "confidence", "summary", "counts", "capabilities", "methodology"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "finding.schema.json#/$defs/dimension" },
+          "name": { "type": "string" },
+          "value": { "type": "integer", "minimum": 0, "maximum": 100, "description": "0 = worst, 100 = best, for every score." },
+          "rating": { "enum": ["good", "fair", "poor"] },
+          "confidence": { "$ref": "finding.schema.json#/$defs/confidence" },
+          "summary": { "type": "string" },
+          "counts": { "$ref": "#/$defs/counts" },
+          "capabilities": { "type": "array", "items": { "type": "string" } },
+          "methodology": { "type": "string" }
+        }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "finding.schema.json" } },
+    "facts": {
+      "type": "object",
+      "description": "Evidence published by capabilities, keyed by evidence key (inventory, fingerprint, technologies, dependencies, architecture, code-health, web-snapshot). Bulky internals such as file lists and page bodies are omitted.",
+      "additionalProperties": true
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "version", "category", "status", "duration_ms", "findings", "execution"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "category": { "type": "string" },
+          "status": { "enum": ["ok", "skipped", "failed"] },
+          "reason": { "type": "string" },
+          "summary": { "type": "string" },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "cached": { "type": "boolean" },
+          "findings": { "type": "integer", "minimum": 0 },
+          "experimental": { "type": "boolean" },
+          "execution": { "$ref": "capability.schema.json#/properties/execution" },
+          "engines": { "$ref": "capability.schema.json#/properties/engines" },
+          "limitations": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "title", "reason", "runnable", "priority"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": ["run", "access", "network"] },
+          "capability": { "type": "string" },
+          "title": { "type": "string" },
+          "reason": { "type": "string" },
+          "runnable": { "type": "boolean" },
+          "priority": { "type": "integer" }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "capability", "media_type", "bytes"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "capability": { "type": "string" },
+          "media_type": { "type": "string" },
+          "path": { "type": "string" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "data_boundary": {
+      "type": "object",
+      "required": ["left_machine", "ai_used", "statement"],
+      "additionalProperties": false,
+      "properties": {
+        "left_machine": { "type": "boolean" },
+        "ai_used": { "type": "boolean" },
+        "calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capability", "host", "method", "count"],
+            "additionalProperties": false,
+            "properties": {
+              "capability": { "type": "string" },
+              "host": { "type": "string" },
+              "method": { "type": "string" },
+              "count": { "type": "integer", "minimum": 0 },
+              "blocked": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "disclosures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capability", "statement"],
+            "additionalProperties": false,
+            "properties": { "capability": { "type": "string" }, "statement": { "type": "string" } }
+          }
+        },
+        "statement": { "type": "string" }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "critical": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "medium": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "info": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.capybari.com/source-intelligence/0.1/capability.schema.json",
+  "title": "Capybari capability metadata (capability.yaml)",
+  "description": "Registry metadata every analyzer declares (Unified Agent, Section 9). The orchestrator uses it to decide what to run, in which order, with which network access, and what to recommend next.",
+  "type": "object",
+  "required": ["id", "name", "version", "category", "summary", "stability", "core_api", "targets", "cost", "execution", "privacy"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", "description": "Matches the repository name suffix: capybari-analyzer-<id>." },
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$" },
+    "category": { "type": "string" },
+    "summary": { "type": "string", "minLength": 1 },
+    "stability": { "enum": ["stable", "experimental"] },
+    "core_api": { "type": "string", "pattern": "^v\\d+$", "description": "capybari-core Analyzer API major version." },
+    "targets": { "type": "array", "minItems": 1, "items": { "enum": ["repository", "website"] } },
+    "requires": { "type": "array", "items": { "type": "string" }, "description": "Evidence keys that must exist before this capability runs." },
+    "optional": { "type": "array", "items": { "type": "string" }, "description": "Evidence keys used when available." },
+    "provides": { "type": "array", "items": { "type": "string" }, "description": "Evidence keys this capability publishes." },
+    "findings": { "type": "array", "items": { "type": "string" }, "description": "Finding categories this capability can produce." },
+    "scores": { "type": "array", "items": { "type": "string" }, "description": "Dimensions whose score this capability contributes to." },
+    "cost": { "enum": ["low", "medium", "high"] },
+    "execution": {
+      "type": "object",
+      "required": ["local", "network", "ai"],
+      "additionalProperties": false,
+      "properties": {
+        "local": { "type": "boolean" },
+        "network": { "$ref": "#/$defs/requirement" },
+        "ai": { "$ref": "#/$defs/requirement" },
+        "network_hosts": { "type": "array", "items": { "type": "string" }, "description": "Enforced allow-list. $target means the scanned website." }
+      }
+    },
+    "privacy": { "type": "string", "minLength": 1, "description": "Plain-language statement of what, if anything, leaves the user's environment." },
+    "engines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "license"],
+        "additionalProperties": false,
+        "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "license": { "type": "string" }, "url": { "type": "string" } }
+      }
+    },
+    "follow_ups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["capability", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "capability": { "type": "string" },
+          "reason": { "type": "string" },
+          "when": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "finding_categories": { "type": "array", "items": { "type": "string" } },
+              "technologies": { "type": "array", "items": { "type": "string" } },
+              "evidence": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "methodology": { "type": "string" }
+  },
+  "$defs": { "requirement": { "enum": ["none", "optional", "required"] } }
+}
