@@ -1,4 +1,4 @@
-module github.com/capybari/capybari-schemas
+module github.com/capybari-repo/capybari-schemas
 
 go 1.27.1
 
