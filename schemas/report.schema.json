@@ -68,6 +68,7 @@
           "summary": { "type": "string" },
           "counts": { "$ref": "#/$defs/counts" },
           "capabilities": { "type": "array", "items": { "type": "string" } },
+          "basis": { "type": "array", "items": { "type": "string" }, "description": "What was examined to produce the score, one line per contributing capability." },
           "methodology": { "type": "string" }
         }
       }
