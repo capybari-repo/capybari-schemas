@@ -89,7 +89,7 @@
           "name": { "type": "string" },
           "version": { "type": "string" },
           "category": { "type": "string" },
-          "status": { "enum": ["ok", "skipped", "failed"] },
+          "status": { "enum": ["ok", "not-applicable", "skipped", "failed"] },
           "reason": { "type": "string" },
           "summary": { "type": "string" },
           "duration_ms": { "type": "integer", "minimum": 0 },
