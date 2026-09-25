@@ -50,7 +50,8 @@
       "properties": {
         "headline": { "type": "string" },
         "counts": { "$ref": "#/$defs/counts" },
-        "top_findings": { "type": "array", "items": { "type": "string" } }
+        "top_findings": { "type": "array", "items": { "type": "string" }, "description": "Findings that matter to buyers (never cosmetic ones)." },
+        "owner_homework": { "type": "integer", "minimum": 0, "description": "Findings that are cosmetic for buyers (owner homework)." }
       }
     },
     "verdict": {
@@ -114,6 +115,7 @@
           "methodology": { "type": "string" },
           "direction": { "enum": ["higher-is-better", "higher-is-worse"], "description": "Absent means higher-is-better. The AI Slop Score is higher-is-worse (0 = clean, 100 = pure slop)." },
           "label": { "type": "string", "description": "Plain-language level, e.g. 'Moderate slop'." },
+          "caveat": { "type": "string", "description": "Shown with the value when the evidence behind it is thin." },
           "components": {
             "type": "array",
             "items": {
