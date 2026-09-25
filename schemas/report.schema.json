@@ -60,7 +60,7 @@
         "required": ["id", "name", "value", "rating", "confidence", "summary", "counts", "capabilities", "methodology"],
         "additionalProperties": false,
         "properties": {
-          "id": { "anyOf": [{ "$ref": "finding.schema.json#/$defs/dimension" }, { "const": "ai-slop" }] },
+          "id": { "anyOf": [{ "$ref": "finding.schema.json#/$defs/dimension" }, { "enum": ["ai-slop", "build-depth"] }] },
           "name": { "type": "string" },
           "value": { "type": "integer", "minimum": 0, "maximum": 100, "description": "0-100; see direction." },
           "rating": { "enum": ["good", "fair", "poor"] },
@@ -81,7 +81,8 @@
               "properties": {
                 "id": { "type": "string" },
                 "name": { "type": "string" },
-                "points": { "type": "number", "minimum": 0 },
+                "points": { "type": "number", "minimum": 0, "description": "Penalty points for meters; points earned for Build Depth." },
+                "max": { "type": "number", "minimum": 0, "description": "Points available, for scores that earn points." },
                 "findings": { "type": "integer", "minimum": 0 },
                 "assessed": { "type": "boolean" },
                 "finding_ids": { "type": "array", "items": { "type": "string" } }
