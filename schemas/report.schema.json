@@ -60,16 +60,34 @@
         "required": ["id", "name", "value", "rating", "confidence", "summary", "counts", "capabilities", "methodology"],
         "additionalProperties": false,
         "properties": {
-          "id": { "$ref": "finding.schema.json#/$defs/dimension" },
+          "id": { "anyOf": [{ "$ref": "finding.schema.json#/$defs/dimension" }, { "const": "ai-slop" }] },
           "name": { "type": "string" },
-          "value": { "type": "integer", "minimum": 0, "maximum": 100, "description": "0 = worst, 100 = best, for every score." },
+          "value": { "type": "integer", "minimum": 0, "maximum": 100, "description": "0-100; see direction." },
           "rating": { "enum": ["good", "fair", "poor"] },
           "confidence": { "$ref": "finding.schema.json#/$defs/confidence" },
           "summary": { "type": "string" },
           "counts": { "$ref": "#/$defs/counts" },
           "capabilities": { "type": "array", "items": { "type": "string" } },
-          "basis": { "type": "array", "items": { "type": "string" }, "description": "What was examined to produce the score, one line per contributing capability." },
-          "methodology": { "type": "string" }
+          "basis": { "type": "array", "items": { "type": "string" }, "description": "What was examined to produce the score, one line per contributing capability or evidence group." },
+          "methodology": { "type": "string" },
+          "direction": { "enum": ["higher-is-better", "higher-is-worse"], "description": "Absent means higher-is-better. The AI Slop Score is higher-is-worse (0 = clean, 100 = pure slop)." },
+          "label": { "type": "string", "description": "Plain-language level, e.g. 'Moderate slop'." },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "points", "findings", "assessed"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "points": { "type": "number", "minimum": 0 },
+                "findings": { "type": "integer", "minimum": 0 },
+                "assessed": { "type": "boolean" },
+                "finding_ids": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
         }
       }
     },
