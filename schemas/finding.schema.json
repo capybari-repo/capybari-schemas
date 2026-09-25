@@ -41,7 +41,11 @@
     "impact": {
       "type": "object",
       "additionalProperties": false,
-      "properties": { "technical": { "type": "string" }, "business": { "type": "string" } }
+      "properties": {
+        "technical": { "type": "string" },
+        "business": { "type": "string" },
+        "buyer": { "enum": ["blocks-purchase", "support-cost", "cosmetic"], "description": "What the finding means to someone deciding whether to trust, use or pay for the product." }
+      }
     },
     "remediation": {
       "type": "object",
@@ -62,7 +66,7 @@
     "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
     "confidence": { "enum": ["high", "medium", "low"] },
     "dimension": {
-      "enum": ["identity", "structure", "dependencies", "security", "change-risk", "maintainability", "data", "interfaces", "operability", "evolution", "ai-signals"]
+      "enum": ["identity", "structure", "dependencies", "security", "change-risk", "maintainability", "data", "interfaces", "operability", "evolution", "ai-signals", "trust"]
     },
     "evidence": {
       "type": "object",

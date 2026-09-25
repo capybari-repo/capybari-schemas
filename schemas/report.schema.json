@@ -53,6 +53,47 @@
         "top_findings": { "type": "array", "items": { "type": "string" } }
       }
     },
+    "verdict": {
+      "type": "object",
+      "description": "Buyer summary shown first: Trust, Finish and Risk, each with its reasons, plus what was not checked. Observations, not a recommendation.",
+      "required": ["headline", "axes", "impact", "not_checked", "disclaimer"],
+      "additionalProperties": false,
+      "properties": {
+        "headline": { "type": "string" },
+        "axes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "question", "label", "rating", "reasons"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "enum": ["trust", "finish", "risk"] },
+              "name": { "type": "string" },
+              "question": { "type": "string" },
+              "label": { "type": "string" },
+              "rating": { "enum": ["good", "fair", "poor", "unknown"] },
+              "reasons": {
+                "type": ["array", "null"],
+                "items": {
+                  "type": "object",
+                  "required": ["text", "kind"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": { "type": "string" },
+                    "kind": { "enum": ["concern", "positive"] },
+                    "impact": { "enum": ["blocks-purchase", "support-cost", "cosmetic"] },
+                    "finding_id": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "impact": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "not_checked": { "type": "array", "items": { "type": "string" } },
+        "disclaimer": { "type": "string" }
+      }
+    },
     "scores": {
       "type": "array",
       "items": {
