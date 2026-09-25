@@ -82,7 +82,8 @@
                     "text": { "type": "string" },
                     "kind": { "enum": ["concern", "positive"] },
                     "impact": { "enum": ["blocks-purchase", "support-cost", "cosmetic"] },
-                    "finding_id": { "type": "string" }
+                    "finding_id": { "type": "string" },
+                    "category": { "type": "string" }
                   }
                 }
               }
