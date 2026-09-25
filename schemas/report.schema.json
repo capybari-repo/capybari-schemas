@@ -103,7 +103,7 @@
         "required": ["id", "name", "value", "rating", "confidence", "summary", "counts", "capabilities", "methodology"],
         "additionalProperties": false,
         "properties": {
-          "id": { "anyOf": [{ "$ref": "finding.schema.json#/$defs/dimension" }, { "enum": ["ai-slop", "build-depth"] }] },
+          "id": { "anyOf": [{ "$ref": "finding.schema.json#/$defs/dimension" }, { "enum": ["trust-score", "ai-slop", "build-depth"] }] },
           "name": { "type": "string" },
           "value": { "type": "integer", "minimum": 0, "maximum": 100, "description": "0-100; see direction." },
           "rating": { "enum": ["good", "fair", "poor"] },
@@ -116,6 +116,36 @@
           "direction": { "enum": ["higher-is-better", "higher-is-worse"], "description": "Absent means higher-is-better. The AI Slop Score is higher-is-worse (0 = clean, 100 = pure slop)." },
           "label": { "type": "string", "description": "Plain-language level, e.g. 'Moderate slop'." },
           "caveat": { "type": "string", "description": "Shown with the value when the evidence behind it is thin." },
+          "grade": { "enum": ["A", "B", "C", "D", "F"], "description": "Letter grade (Trust Score)." },
+          "ceilings": {
+            "type": "array",
+            "description": "Conditions that hold the score down however good the rest is; the lowest applies.",
+            "items": {
+              "type": "object",
+              "required": ["max", "reason"],
+              "additionalProperties": false,
+              "properties": {
+                "max": { "type": "integer", "minimum": 0, "maximum": 100 },
+                "reason": { "type": "string" },
+                "finding_id": { "type": "string" }
+              }
+            }
+          },
+          "deductions": {
+            "type": "array",
+            "description": "Trust Score receipt: what cost points, largest first.",
+            "items": {
+              "type": "object",
+              "required": ["group", "text", "points"],
+              "additionalProperties": false,
+              "properties": {
+                "group": { "type": "string" },
+                "text": { "type": "string" },
+                "points": { "type": "integer", "minimum": 1 },
+                "finding_id": { "type": "string" }
+              }
+            }
+          },
           "components": {
             "type": "array",
             "items": {
