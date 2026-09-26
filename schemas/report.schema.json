@@ -54,6 +54,16 @@
         "owner_homework": { "type": "integer", "minimum": 0, "description": "Findings that are cosmetic for buyers (owner homework)." }
       }
     },
+    "not_scored": {
+      "type": "array",
+      "description": "Scores withheld because there was nothing to judge, with the reason in plain words.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "reason"],
+        "additionalProperties": false,
+        "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "reason": { "type": "string" } }
+      }
+    },
     "verdict": {
       "type": "object",
       "description": "Buyer summary shown first: Trust, Finish and Risk, each with its reasons, plus what was not checked. Observations, not a recommendation.",
